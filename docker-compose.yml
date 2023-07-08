@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  db:
+    # 公式のイメージを利用(M1チップ以降)
+    image: arm64v8/mysql:8.0
+
+    # コンテナの名前を設定
+    container_name: rest-sns-db
+
+    # ローカルPCの50000番ポートとDockerコンテナの3306番ポートを接続する
+    ports:
+      - 50000:3306
+
+    # DBに設定する値
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rest-sns-db
+      MYSQL_PASSWORD: root
+      TZ: 'Asia/Tokyo'
+
+    # DBのデータをvolumeに移しデータを永続化する
+    volumes:
+      - rest-sns-volume:/var/lib/mysql
+
+    # 利用するDockerNetworkを指定
+    networks:
+      - rest-sns-nw
+
+# Docker上で本コンテナが設置されるNetworkを作成
+networks:
+  rest-sns-nw:
+# MySQLに保存したデータを永続化する場所
+volumes:
+  rest-sns-volume:
