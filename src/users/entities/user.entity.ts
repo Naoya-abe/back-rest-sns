@@ -72,3 +72,17 @@ export class UserNotFoundExceptionEntity {
   })
   statusCode: number;
 }
+
+export class UserInternalServerErrorExceptionEntity {
+  @ApiProperty({
+    example: 'Something went wrong in /user create()',
+    description: 'エラーメッセージ',
+  })
+  message: string;
+
+  @ApiProperty({ example: 'Internal Server Error', description: 'エラー概要' })
+  error: string;
+
+  @ApiProperty({ example: 500, description: 'HTTPステータスコード' })
+  statusCode: number;
+}

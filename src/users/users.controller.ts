@@ -21,8 +21,8 @@ import {
   UserEntity,
   UserCreateConflictExceptionEntity,
   UserNotFoundExceptionEntity,
+  UserInternalServerErrorExceptionEntity,
 } from './entities/user.entity';
-import { InternalServerErrorExceptionEntity } from './entities/internal-server-error-exception.entity';
 
 @Controller('users')
 @ApiTags('/users')
@@ -45,7 +45,7 @@ export class UsersController {
   @ApiResponse({
     status: 500,
     description: '予期しないエラーが発生した場合に返却',
-    type: InternalServerErrorExceptionEntity,
+    type: UserInternalServerErrorExceptionEntity,
   })
   create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.usersService.create(createUserDto);
@@ -63,7 +63,7 @@ export class UsersController {
   @ApiResponse({
     status: 500,
     description: '予期しないエラーが発生した場合に返却',
-    type: InternalServerErrorExceptionEntity,
+    type: UserInternalServerErrorExceptionEntity,
   })
   findAll() {
     return this.usersService.findAll();
@@ -90,7 +90,7 @@ export class UsersController {
   @ApiResponse({
     status: 500,
     description: '予期しないエラーが発生した場合に返却',
-    type: InternalServerErrorExceptionEntity,
+    type: UserInternalServerErrorExceptionEntity,
   })
   findOne(@Param('id') id: string): Promise<UserEntity> {
     return this.usersService.findOne(id);
@@ -110,12 +110,26 @@ export class UsersController {
     type: UserEntity,
   })
   @ApiResponse({
+    status: 404,
+    description: '指定されたUserIDがDBに存在しない時に返却',
+    type: UserNotFoundExceptionEntity,
+  })
+  @ApiResponse({
+    status: 409,
+    description:
+      '更新しようとしたemailが既に他のUserによって使用されている時に返却',
+    type: UserCreateConflictExceptionEntity,
+  })
+  @ApiResponse({
     status: 500,
     description: '予期しないエラーが発生した場合に返却',
-    type: InternalServerErrorExceptionEntity,
+    type: UserInternalServerErrorExceptionEntity,
   })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
@@ -134,7 +148,7 @@ export class UsersController {
   @ApiResponse({
     status: 500,
     description: '予期しないエラーが発生した場合に返却',
-    type: InternalServerErrorExceptionEntity,
+    type: UserInternalServerErrorExceptionEntity,
   })
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);

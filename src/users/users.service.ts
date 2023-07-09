@@ -38,7 +38,9 @@ export class UsersService {
           `Email ${createUserDto.email} already exists`,
         );
       } else {
-        throw new InternalServerErrorException('Something went wrong');
+        throw new InternalServerErrorException(
+          'Something went wrong in /user create()',
+        );
       }
     }
   }
@@ -52,7 +54,9 @@ export class UsersService {
       });
       return usersWithoutPassword;
     } catch (error) {
-      throw new InternalServerErrorException('Something went wrong');
+      throw new InternalServerErrorException(
+        'Something went wrong in /user findAll()',
+      );
     }
   }
 
@@ -68,13 +72,36 @@ export class UsersService {
       if (error.status === 404) {
         throw new NotFoundException(`User with ID ${id} not found`);
       } else {
-        throw new InternalServerErrorException('Something went wrong');
+        throw new InternalServerErrorException(
+          'Something went wrong in /user findOne()',
+        );
       }
     }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    try {
+      const { email, username, selfIntroduction } = updateUserDto;
+      const updatedUser: User = await this.prisma.user.update({
+        where: { id },
+        data: { email, username, selfIntroduction },
+      });
+      const { password, ...updatedUserWithoutPassword } = updatedUser;
+      return updatedUserWithoutPassword;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`User with ID ${id} not found`);
+        } else if (error.code === 'P2002') {
+          throw new ConflictException(
+            `Email ${updateUserDto.email} already exists`,
+          );
+        }
+      }
+      throw new InternalServerErrorException(
+        'Something went wrong in /user update()',
+      );
+    }
   }
 
   remove(id: number) {
