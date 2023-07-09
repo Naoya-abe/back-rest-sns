@@ -26,6 +26,7 @@ export class UsersService {
       });
 
       // Remove password from the user object
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password: _, ...userWithoutPassword } = createdUser;
 
       return userWithoutPassword;
@@ -49,6 +50,7 @@ export class UsersService {
     try {
       const users: User[] = await this.prisma.user.findMany();
       const usersWithoutPassword = users.map((user) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...userWithoutPassword } = user;
         return userWithoutPassword;
       });
@@ -66,6 +68,8 @@ export class UsersService {
         where: { id: id },
       });
       if (!user) throw new NotFoundException();
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     } catch (error) {
@@ -86,6 +90,7 @@ export class UsersService {
         where: { id },
         data: { email, username, selfIntroduction },
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...updatedUserWithoutPassword } = updatedUser;
       return updatedUserWithoutPassword;
     } catch (error) {
@@ -104,7 +109,25 @@ export class UsersService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<UserEntity> {
+    try {
+      const deletedUser: User = await this.prisma.user.delete({
+        where: { id },
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...deletedUserWithoutPassword } = deletedUser;
+      return deletedUserWithoutPassword;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      } else {
+        throw new InternalServerErrorException(
+          'Something went wrong in /user delete()',
+        );
+      }
+    }
   }
 }

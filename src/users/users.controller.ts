@@ -146,11 +146,16 @@ export class UsersController {
     type: UserEntity,
   })
   @ApiResponse({
+    status: 404,
+    description: '指定されたUserIDがDBに存在しない時に返却',
+    type: UserNotFoundExceptionEntity,
+  })
+  @ApiResponse({
     status: 500,
     description: '予期しないエラーが発生した場合に返却',
     type: UserInternalServerErrorExceptionEntity,
   })
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }

@@ -75,7 +75,7 @@ export class UserNotFoundExceptionEntity {
 
 export class UserInternalServerErrorExceptionEntity {
   @ApiProperty({
-    example: 'Something went wrong in /user create()',
+    example: 'Something went wrong in /user method()',
     description: 'エラーメッセージ',
   })
   message: string;
