@@ -17,7 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { User } from './entities/user.entity';
+import { User, UserCreateConflictException } from './entities/user.entity';
 
 @Controller('users')
 @ApiTags('/users')
@@ -32,7 +32,12 @@ export class UsersController {
     description: '登録したUser情報を返却',
     type: User,
   })
-  create(@Body() createUserDto: CreateUserDto) {
+  @ApiResponse({
+    status: 409,
+    description: '同じemailを持つUserが存在する場合に返却',
+    type: UserCreateConflictException,
+  })
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto);
   }
 
