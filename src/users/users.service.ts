@@ -1,22 +1,26 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from './entities/user.entity';
-import { Prisma } from '@prisma/client';
+import { UserEntity } from './entities/user.entity';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     try {
       const { email, password } = createUserDto;
       const username = email.substring(0, email.indexOf('@'));
       const saltOrRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltOrRounds);
-      const createdUser = await this.prisma.user.create({
+      const createdUser: User = await this.prisma.user.create({
         data: { email, password: hashedPassword, username },
       });
 
@@ -33,13 +37,22 @@ export class UsersService {
           `Email ${createUserDto.email} already exists`,
         );
       } else {
-        throw error;
+        throw new InternalServerErrorException('Something went wrong');
       }
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise<UserEntity[]> {
+    try {
+      const users: User[] = await this.prisma.user.findMany();
+      const usersWithoutPassword = users.map((user) => {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+      return usersWithoutPassword;
+    } catch (error) {
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
 
   findOne(id: number) {

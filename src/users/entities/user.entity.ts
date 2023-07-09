@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class User {
+export class UserEntity {
   @ApiProperty({
     example: 'a279c303-9abb-4395-9533-c7bccd4a63fb',
     description: 'UserのID',
@@ -35,7 +35,7 @@ export class User {
   updatedAt: Date;
 }
 
-export class UserCreateConflictException {
+export class UserCreateConflictExceptionEntity {
   @ApiProperty({
     example: 'Email sample1@email.com already exists',
     description: 'エラーメッセージ',

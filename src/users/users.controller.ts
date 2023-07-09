@@ -17,7 +17,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { User, UserCreateConflictException } from './entities/user.entity';
+import {
+  UserEntity,
+  UserCreateConflictExceptionEntity,
+} from './entities/user.entity';
+import { InternalServerErrorExceptionEntity } from './entities/internal-server-error-exception.entity';
 
 @Controller('users')
 @ApiTags('/users')
@@ -30,14 +34,19 @@ export class UsersController {
   @ApiResponse({
     status: 201,
     description: '登録したUser情報を返却',
-    type: User,
+    type: UserEntity,
   })
   @ApiResponse({
     status: 409,
     description: '同じemailを持つUserが存在する場合に返却',
-    type: UserCreateConflictException,
+    type: UserCreateConflictExceptionEntity,
   })
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  @ApiResponse({
+    status: 500,
+    description: '予期しないエラーが発生した場合に返却',
+    type: InternalServerErrorExceptionEntity,
+  })
+  create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.usersService.create(createUserDto);
   }
 
@@ -47,8 +56,13 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: '登録済みUser情報を複数返却',
-    type: User,
+    type: UserEntity,
     isArray: true,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '予期しないエラーが発生した場合に返却',
+    type: InternalServerErrorExceptionEntity,
   })
   findAll() {
     return this.usersService.findAll();
@@ -65,7 +79,12 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: '指定されたIDのUser情報を返却',
-    type: User,
+    type: UserEntity,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '予期しないエラーが発生した場合に返却',
+    type: InternalServerErrorExceptionEntity,
   })
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
@@ -82,7 +101,12 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: '更新後のUser情報を返却',
-    type: User,
+    type: UserEntity,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '予期しないエラーが発生した場合に返却',
+    type: InternalServerErrorExceptionEntity,
   })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
@@ -99,7 +123,12 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: '削除されたUserの情報を返却',
-    type: User,
+    type: UserEntity,
+  })
+  @ApiResponse({
+    status: 500,
+    description: '予期しないエラーが発生した場合に返却',
+    type: InternalServerErrorExceptionEntity,
   })
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
