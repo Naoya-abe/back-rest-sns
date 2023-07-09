@@ -20,6 +20,7 @@ import {
 import {
   UserEntity,
   UserCreateConflictExceptionEntity,
+  UserNotFoundExceptionEntity,
 } from './entities/user.entity';
 import { InternalServerErrorExceptionEntity } from './entities/internal-server-error-exception.entity';
 
@@ -82,12 +83,17 @@ export class UsersController {
     type: UserEntity,
   })
   @ApiResponse({
+    status: 404,
+    description: '指定されたUserIDがDBに存在しない時に返却',
+    type: UserNotFoundExceptionEntity,
+  })
+  @ApiResponse({
     status: 500,
     description: '予期しないエラーが発生した場合に返却',
     type: InternalServerErrorExceptionEntity,
   })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id') id: string): Promise<UserEntity> {
+    return this.usersService.findOne(id);
   }
 
   @Patch(':id')

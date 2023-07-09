@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -55,8 +56,21 @@ export class UsersService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<UserEntity> {
+    try {
+      const user: User = await this.prisma.user.findUnique({
+        where: { id: id },
+      });
+      if (!user) throw new NotFoundException();
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    } catch (error) {
+      if (error.status === 404) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      } else {
+        throw new InternalServerErrorException('Something went wrong');
+      }
+    }
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

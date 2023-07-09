@@ -53,3 +53,22 @@ export class UserCreateConflictExceptionEntity {
   })
   statusCode: number;
 }
+
+export class UserNotFoundExceptionEntity {
+  @ApiProperty({
+    example: 'User with ID a279c303-9abb-4395-9533-c7bccd4a63fb not found',
+    description: 'エラーメッセージ',
+  })
+  message: string;
+  @ApiProperty({
+    example: 'Not Found',
+    description: 'エラー概要',
+  })
+  error: string;
+
+  @ApiProperty({
+    example: 404,
+    description: 'HTTPステータスコード',
+  })
+  statusCode: number;
+}
