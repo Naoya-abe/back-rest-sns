@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserEntity {
@@ -48,7 +49,7 @@ export class UserCreateConflictExceptionEntity {
   error: string;
 
   @ApiProperty({
-    example: 409,
+    example: HttpStatus.CONFLICT,
     description: 'HTTPステータスコード',
   })
   statusCode: number;
@@ -67,7 +68,7 @@ export class UserNotFoundExceptionEntity {
   error: string;
 
   @ApiProperty({
-    example: 404,
+    example: HttpStatus.NOT_FOUND,
     description: 'HTTPステータスコード',
   })
   statusCode: number;
@@ -83,6 +84,9 @@ export class UserInternalServerErrorExceptionEntity {
   @ApiProperty({ example: 'Internal Server Error', description: 'エラー概要' })
   error: string;
 
-  @ApiProperty({ example: 500, description: 'HTTPステータスコード' })
+  @ApiProperty({
+    example: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'HTTPステータスコード',
+  })
   statusCode: number;
 }

@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
+import * as bcryptjs from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -20,7 +20,7 @@ export class UsersService {
       const { email, password } = createUserDto;
       const username = email.substring(0, email.indexOf('@'));
       const saltOrRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+      const hashedPassword = await bcryptjs.hash(password, saltOrRounds);
       const createdUser: User = await this.prisma.user.create({
         data: { email, password: hashedPassword, username },
       });
@@ -62,10 +62,10 @@ export class UsersService {
     }
   }
 
-  async findOne(id: string): Promise<UserEntity> {
+  async findOneById(id: string): Promise<UserEntity> {
     try {
       const user: User = await this.prisma.user.findUnique({
-        where: { id: id },
+        where: { id },
       });
       if (!user) throw new NotFoundException();
 
@@ -77,7 +77,7 @@ export class UsersService {
         throw new NotFoundException(`User with ID ${id} not found`);
       } else {
         throw new InternalServerErrorException(
-          'Something went wrong in /user findOne()',
+          'Something went wrong in /user findOneById()',
         );
       }
     }
