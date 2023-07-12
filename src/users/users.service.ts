@@ -40,7 +40,7 @@ export class UsersService {
         );
       } else {
         throw new InternalServerErrorException(
-          'Something went wrong in /user create()',
+          'Something went wrong in /users create()',
         );
       }
     }
@@ -57,7 +57,7 @@ export class UsersService {
       return usersWithoutPassword;
     } catch (error) {
       throw new InternalServerErrorException(
-        'Something went wrong in /user findAll()',
+        'Something went wrong in /users findAll()',
       );
     }
   }
@@ -67,17 +67,17 @@ export class UsersService {
       const user: User = await this.prisma.user.findUnique({
         where: { id },
       });
-      if (!user) throw new NotFoundException();
+      if (!user) throw new NotFoundException(`User with ID ${id} not found`);
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     } catch (error) {
-      if (error.status === 404) {
-        throw new NotFoundException(`User with ID ${id} not found`);
+      if (error instanceof NotFoundException) {
+        throw error;
       } else {
         throw new InternalServerErrorException(
-          'Something went wrong in /user findOneById()',
+          'Something went wrong in /users findOneById()',
         );
       }
     }
@@ -104,7 +104,7 @@ export class UsersService {
         }
       }
       throw new InternalServerErrorException(
-        'Something went wrong in /user update()',
+        'Something went wrong in /users update()',
       );
     }
   }
@@ -125,7 +125,7 @@ export class UsersService {
         throw new NotFoundException(`User with ID ${id} not found`);
       } else {
         throw new InternalServerErrorException(
-          'Something went wrong in /user delete()',
+          'Something went wrong in /users remove()',
         );
       }
     }

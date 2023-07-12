@@ -26,13 +26,13 @@ export class AuthService {
 
       const isCorrectPassword = await bcryptjs.compare(password, user.password);
       if (!isCorrectPassword) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Email or Password is incorrect');
       }
 
       return user;
     } catch (error) {
-      if (error.status === 401) {
-        throw new UnauthorizedException('Email or Password is incorrect');
+      if (error instanceof UnauthorizedException) {
+        throw error;
       } else {
         throw new InternalServerErrorException(
           'Something went wrong in /auth validateUser()',
@@ -43,10 +43,10 @@ export class AuthService {
 
   async login(user: User): Promise<LoginEntity> {
     try {
-      const payload = { email: user.email, id: user.id };
+      const payload = { email: user.email, sub: user.id };
       const accessToken = await this.jwtService.signAsync(payload, {
         secret: process.env.JWT_SECRET,
-        expiresIn: '1m',
+        expiresIn: '1h',
       });
       return { accessToken };
     } catch (error) {

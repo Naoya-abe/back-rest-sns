@@ -27,6 +27,11 @@ import {
 
 @Controller('users')
 @ApiTags('/users')
+@ApiResponse({
+  status: HttpStatus.INTERNAL_SERVER_ERROR,
+  description: '予期しないエラーが発生した場合に返却',
+  type: UserInternalServerErrorExceptionEntity,
+})
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -43,11 +48,6 @@ export class UsersController {
     description: '同じemailを持つUserが存在する場合に返却',
     type: UserCreateConflictExceptionEntity,
   })
-  @ApiResponse({
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: '予期しないエラーが発生した場合に返却',
-    type: UserInternalServerErrorExceptionEntity,
-  })
   create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.usersService.create(createUserDto);
   }
@@ -60,11 +60,6 @@ export class UsersController {
     description: '登録済みUser情報を複数返却',
     type: UserEntity,
     isArray: true,
-  })
-  @ApiResponse({
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: '予期しないエラーが発生した場合に返却',
-    type: UserInternalServerErrorExceptionEntity,
   })
   findAll() {
     return this.usersService.findAll();
@@ -87,11 +82,6 @@ export class UsersController {
     status: HttpStatus.NOT_FOUND,
     description: '指定されたUserIDがDBに存在しない時に返却',
     type: UserNotFoundExceptionEntity,
-  })
-  @ApiResponse({
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: '予期しないエラーが発生した場合に返却',
-    type: UserInternalServerErrorExceptionEntity,
   })
   findOneById(@Param('id') id: string): Promise<UserEntity> {
     return this.usersService.findOneById(id);
@@ -121,11 +111,6 @@ export class UsersController {
       '更新しようとしたemailが既に他のUserによって使用されている時に返却',
     type: UserCreateConflictExceptionEntity,
   })
-  @ApiResponse({
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: '予期しないエラーが発生した場合に返却',
-    type: UserInternalServerErrorExceptionEntity,
-  })
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -150,11 +135,6 @@ export class UsersController {
     status: HttpStatus.NOT_FOUND,
     description: '指定されたUserIDがDBに存在しない時に返却',
     type: UserNotFoundExceptionEntity,
-  })
-  @ApiResponse({
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: '予期しないエラーが発生した場合に返却',
-    type: UserInternalServerErrorExceptionEntity,
   })
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);

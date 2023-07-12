@@ -21,7 +21,7 @@ import {
   LoginUnauthorizedExceptionEntity,
 } from './entities/auth.entity';
 import { AuthGuard } from '@nestjs/passport';
-import RequestWithUser from './types/requestWithUser';
+import RequestWithUser from '../types/requestWithUser';
 
 @Controller('auth')
 @ApiTags('/auth')

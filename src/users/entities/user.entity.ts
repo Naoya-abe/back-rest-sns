@@ -42,6 +42,7 @@ export class UserCreateConflictExceptionEntity {
     description: 'エラーメッセージ',
   })
   message: string;
+
   @ApiProperty({
     example: 'Conflict',
     description: 'エラー概要',
@@ -61,6 +62,7 @@ export class UserNotFoundExceptionEntity {
     description: 'エラーメッセージ',
   })
   message: string;
+
   @ApiProperty({
     example: 'Not Found',
     description: 'エラー概要',
@@ -76,7 +78,7 @@ export class UserNotFoundExceptionEntity {
 
 export class UserInternalServerErrorExceptionEntity {
   @ApiProperty({
-    example: 'Something went wrong in /user method()',
+    example: 'Something went wrong in /users method()',
     description: 'エラーメッセージ',
   })
   message: string;
