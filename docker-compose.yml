@@ -1,11 +1,11 @@
 version: '3.8'
 services:
-  dev-db:
+  db:
     # 公式のイメージを利用(M1チップ以降)
     image: arm64v8/mysql:8.0
 
     # コンテナの名前を設定
-    container_name: rest-sns-dev-db
+    container_name: rest-sns-db
 
     # ローカルPCの50000番ポートとDockerコンテナの3306番ポートを接続する
     ports:
@@ -14,35 +14,13 @@ services:
     # DBに設定する値
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: rest-sns-dev-db
+      MYSQL_DATABASE: rest-sns-db
       MYSQL_PASSWORD: root
       TZ: 'Asia/Tokyo'
 
     # DBのデータをvolumeに移しデータを永続化する
     volumes:
       - rest-sns-volume:/var/lib/mysql
-
-    # 利用するDockerNetworkを指定
-    networks:
-      - rest-sns-nw
-
-  test-db:
-    # 公式のイメージを利用(M1チップ以降)
-    image: arm64v8/mysql:8.0
-
-    # コンテナの名前を設定
-    container_name: rest-sns-test-db
-
-    # ローカルPCの50001番ポートとDockerコンテナの3306番ポートを接続する
-    ports:
-      - 50001:3306
-
-    # DBに設定する値
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: rest-sns-test-db
-      MYSQL_PASSWORD: root
-      TZ: 'Asia/Tokyo'
 
     # 利用するDockerNetworkを指定
     networks:

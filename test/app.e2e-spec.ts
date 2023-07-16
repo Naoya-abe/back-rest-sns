@@ -1,67 +1,24 @@
-import { Test } from '@nestjs/testing';
-import { AppModule } from '../src/app.module';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
+import { AppModule } from './../src/app.module';
 
-describe('App e2e', () => {
+describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let prisma: PrismaService;
 
-  beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-    app = moduleRef.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+
+    app = moduleFixture.createNestApplication();
     await app.init();
-
-    prisma = app.get(PrismaService);
-    await prisma.cleanDb();
-  });
-  afterAll(() => {
-    app.close();
-  });
-  describe('Users', () => {
-    describe('Create', () => {
-      it.todo('should create');
-    });
-    describe('FindAll', () => {
-      it.todo('should findAll');
-    });
-    describe('FindOneById', () => {
-      it.todo('should findOneById');
-    });
-    describe('Update', () => {
-      it.todo('should update');
-    });
-    describe('Remove', () => {
-      it.todo('should remove');
-    });
-  });
-  describe('Auth', () => {
-    describe('Login', () => {
-      it.todo('should login');
-    });
   });
 
-  describe('Posts', () => {
-    describe('Create', () => {
-      it.todo('should create');
-    });
-    describe('FindAll', () => {
-      it.todo('should findAll');
-    });
-    describe('FindAllByUser', () => {
-      it.todo('should findAllByUser');
-    });
-    describe('FindOneById', () => {
-      it.todo('should findOneById');
-    });
-    describe('Update', () => {
-      it.todo('should update');
-    });
-    describe('Remove', () => {
-      it.todo('should remove');
-    });
+  it('/ (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/')
+      .expect(200)
+      .expect('Hello World!');
   });
 });
