@@ -36,20 +36,6 @@ export class UserEntity {
   updatedAt: Date;
 }
 
-export class UserJwtUnauthorizedException {
-  @ApiProperty({
-    example: 'Unauthorized',
-    description: 'エラーメッセージ',
-  })
-  message: string;
-
-  @ApiProperty({
-    example: HttpStatus.UNAUTHORIZED,
-    description: 'HTTPステータスコード',
-  })
-  statusCode: number;
-}
-
 export class UserCreateConflictExceptionEntity {
   @ApiProperty({
     example: 'Email sample1@email.com already exists',

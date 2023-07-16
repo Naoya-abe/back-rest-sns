@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,7 +19,6 @@ import {
   UpdateUserDecorator,
   UsersControllerDecorator,
 } from './decorators/users.decorator';
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 @UsersControllerDecorator()
@@ -35,21 +33,18 @@ export class UsersController {
 
   @Get()
   @FindAllUsersDecorator()
-  @UseGuards(AuthGuard('jwt'))
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
   @FindOneUserByIdDecorator()
-  @UseGuards(AuthGuard('jwt'))
   findOneById(@Param('id') id: string): Promise<UserEntity> {
     return this.usersService.findOneById(id);
   }
 
   @Patch(':id')
   @UpdateUserDecorator()
-  @UseGuards(AuthGuard('jwt'))
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -59,7 +54,6 @@ export class UsersController {
 
   @Delete(':id')
   @RemoveUserDecorator()
-  @UseGuards(AuthGuard('jwt'))
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
