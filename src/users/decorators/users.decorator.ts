@@ -10,6 +10,7 @@ import {
   UserCreateConflictExceptionEntity,
   UserEntity,
   UserInternalServerErrorExceptionEntity,
+  UserJwtUnauthorizedException,
   UserNotFoundExceptionEntity,
 } from '../entities/user.entity';
 
@@ -50,6 +51,11 @@ export function FindAllUsersDecorator() {
       type: UserEntity,
       isArray: true,
     }),
+    ApiResponse({
+      status: HttpStatus.UNAUTHORIZED,
+      description: 'JWT認証に失敗したときに返却',
+      type: UserJwtUnauthorizedException,
+    }),
   );
 }
 
@@ -65,6 +71,11 @@ export function FindOneUserByIdDecorator() {
       status: HttpStatus.OK,
       description: '指定されたIDのUser情報を返却',
       type: UserEntity,
+    }),
+    ApiResponse({
+      status: HttpStatus.UNAUTHORIZED,
+      description: 'JWT認証に失敗したときに返却',
+      type: UserJwtUnauthorizedException,
     }),
     ApiResponse({
       status: HttpStatus.NOT_FOUND,
@@ -86,6 +97,11 @@ export function UpdateUserDecorator() {
       status: HttpStatus.OK,
       description: '更新後のUser情報を返却',
       type: UserEntity,
+    }),
+    ApiResponse({
+      status: HttpStatus.UNAUTHORIZED,
+      description: 'JWT認証に失敗したときに返却',
+      type: UserJwtUnauthorizedException,
     }),
     ApiResponse({
       status: HttpStatus.NOT_FOUND,
@@ -113,6 +129,11 @@ export function RemoveUserDecorator() {
       status: HttpStatus.OK,
       description: '削除されたUserの情報を返却',
       type: UserEntity,
+    }),
+    ApiResponse({
+      status: HttpStatus.UNAUTHORIZED,
+      description: 'JWT認証に失敗したときに返却',
+      type: UserJwtUnauthorizedException,
     }),
     ApiResponse({
       status: HttpStatus.NOT_FOUND,
