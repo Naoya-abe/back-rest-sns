@@ -76,8 +76,33 @@ export class CommentsService {
     }
   }
 
-  async findOne(id: string) {
-    return `This action returns a #${id} comment`;
+  async findOne(id: string): Promise<CommentEntity> {
+    try {
+      const comment: Comment = await this.prisma.comment.findUnique({
+        where: { id },
+      });
+      if (!comment) {
+        throw new NotFoundException(`The Comment with ${id} does not exist.`);
+      }
+      const userWithoutPassword: UserEntity =
+        await this.usersService.findOneById(comment.userId);
+      return {
+        id: comment.id,
+        content: comment.content,
+        user: userWithoutPassword,
+        postId: comment.postId,
+        createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt,
+      };
+    } catch (error) {
+      if (error.status === 404) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(
+          'Something went wrong in /comments findOne()',
+        );
+      }
+    }
   }
 
   async update(id: string, updateCommentDto: UpdateCommentDto) {
