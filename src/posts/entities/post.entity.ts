@@ -75,7 +75,7 @@ export class PostInternalServerErrorExceptionEntity {
 
 export class PostNotFoundExceptionEntity {
   @ApiProperty({
-    example: 'Post with ID a279c303-9abb-4395-9533-c7bccd4a63fb not found',
+    example: 'The Post with ID a279c303-9abb-4395-9533-c7bccd4a63fb not found',
     description: 'エラーメッセージ',
   })
   message: string;
