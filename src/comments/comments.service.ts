@@ -138,7 +138,30 @@ export class CommentsService {
     }
   }
 
-  async remove(id: string) {
-    return `This action removes a #${id} comment`;
+  async remove(id: string): Promise<CommentEntity> {
+    try {
+      const deletedComment: Comment = await this.prisma.comment.delete({
+        where: { id },
+      });
+      const userWithoutPassword: UserEntity =
+        await this.usersService.findOneById(deletedComment.userId);
+      return {
+        id: deletedComment.id,
+        content: deletedComment.content,
+        user: userWithoutPassword,
+        postId: deletedComment.postId,
+        createdAt: deletedComment.createdAt,
+        updatedAt: deletedComment.updatedAt,
+      };
+    } catch (error) {
+      console.log(error);
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`The Comment with ${id} does not exist.`);
+      } else {
+        throw new InternalServerErrorException(
+          'Something went wrong in /comments update()',
+        );
+      }
+    }
   }
 }

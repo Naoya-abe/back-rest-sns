@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import {
   CommentsControllerDecorator,
   CreateCommentDecorator,
+  DeleteCommentDecorator,
   FindAllCommentsByPostIdDecorator,
   FindOneCommentDecorator,
   UpdateCommentDecorator,
@@ -61,7 +62,8 @@ export class CommentsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @DeleteCommentDecorator()
+  remove(@Param('id') id: string): Promise<CommentEntity> {
     return this.commentsService.remove(id);
   }
 }
