@@ -18,6 +18,7 @@ import {
   CreateCommentDecorator,
   FindAllCommentsByPostIdDecorator,
   FindOneCommentDecorator,
+  UpdateCommentDecorator,
 } from './decorators/comments.decorator';
 import RequestWithUser from 'src/types/requestWithUser';
 import { CommentEntity } from './entities/comment.entity';
@@ -51,7 +52,11 @@ export class CommentsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
+  @UpdateCommentDecorator()
+  update(
+    @Param('id') id: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+  ): Promise<CommentEntity> {
     return this.commentsService.update(id, updateCommentDto);
   }
 

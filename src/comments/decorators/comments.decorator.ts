@@ -92,3 +92,24 @@ export function FindOneCommentDecorator() {
     }),
   );
 }
+
+export function UpdateCommentDecorator() {
+  return applyDecorators(
+    ApiOperation({ summary: '単体更新API' }),
+    ApiParam({
+      name: 'id',
+      type: String,
+      example: 'a279c303-9abb-4395-9533-c7bccd4a63fb',
+    }),
+    ApiResponse({
+      status: HttpStatus.OK,
+      description: 'Commentを返却',
+      type: CommentEntity,
+    }),
+    ApiResponse({
+      status: HttpStatus.NOT_FOUND,
+      description: '指定されたIDを持つCommentがDBに存在しない時に返却',
+      type: CommentNotFoundExceptionEntity,
+    }),
+  );
+}

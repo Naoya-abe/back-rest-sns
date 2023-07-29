@@ -105,8 +105,37 @@ export class CommentsService {
     }
   }
 
-  async update(id: string, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
+  async update(
+    id: string,
+    updateCommentDto: UpdateCommentDto,
+  ): Promise<CommentEntity> {
+    try {
+      const { content } = updateCommentDto;
+
+      const updatedComment: Comment = await this.prisma.comment.update({
+        where: { id },
+        data: { content },
+      });
+
+      const userWithoutPassword: UserEntity =
+        await this.usersService.findOneById(updatedComment.userId);
+      return {
+        id: updatedComment.id,
+        content: updatedComment.content,
+        user: userWithoutPassword,
+        postId: updatedComment.postId,
+        createdAt: updatedComment.createdAt,
+        updatedAt: updatedComment.updatedAt,
+      };
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`The Comment with ${id} does not exist.`);
+      } else {
+        throw new InternalServerErrorException(
+          'Something went wrong in /comments update()',
+        );
+      }
+    }
   }
 
   async remove(id: string) {
