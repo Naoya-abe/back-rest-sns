@@ -17,7 +17,6 @@ import {
   CommentsControllerDecorator,
   CreateCommentDecorator,
   FindAllCommentsByPostIdDecorator,
-  FindAllCommentsDecorator,
 } from './decorators/comments.decorator';
 import RequestWithUser from 'src/types/requestWithUser';
 import { CommentEntity } from './entities/comment.entity';
@@ -38,15 +37,9 @@ export class CommentsController {
     return this.commentsService.create(createCommentDto, user);
   }
 
-  @Get()
-  @FindAllCommentsDecorator()
-  findAll() {
-    return this.commentsService.findAll();
-  }
-
   @Get(':postId')
   @FindAllCommentsByPostIdDecorator()
-  findAllByPostId(@Param('postId') postId: string) {
+  findAllByPostId(@Param('postId') postId: string): Promise<CommentEntity[]> {
     return this.commentsService.findAllByPostId(postId);
   }
 

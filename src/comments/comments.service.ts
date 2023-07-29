@@ -9,6 +9,7 @@ import { Comment, User } from '@prisma/client';
 import { CommentEntity } from './entities/comment.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class CommentsService {
@@ -48,12 +49,31 @@ export class CommentsService {
     }
   }
 
-  async findAll() {
-    return `This action returns all comments`;
-  }
-
-  async findAllByPostId(postId: string) {
-    return `This action returns all comments by PostId`;
+  async findAllByPostId(postId: string): Promise<CommentEntity[]> {
+    try {
+      const comments: Comment[] = await this.prisma.comment.findMany({
+        where: { postId },
+      });
+      const commentEntities: CommentEntity[] = await Promise.all(
+        comments.map(async (comment) => {
+          const userWithoutPassword: UserEntity =
+            await this.usersService.findOneById(comment.userId);
+          return {
+            id: comment.id,
+            content: comment.content,
+            user: userWithoutPassword,
+            postId: comment.postId,
+            createdAt: comment.createdAt,
+            updatedAt: comment.updatedAt,
+          };
+        }),
+      );
+      return commentEntities;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Something went wrong in /comments findAllByPostId()',
+      );
+    }
   }
 
   async findOne(id: string) {

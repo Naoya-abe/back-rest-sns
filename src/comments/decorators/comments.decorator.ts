@@ -55,18 +55,6 @@ export function CreateCommentDecorator() {
   );
 }
 
-export function FindAllCommentsDecorator() {
-  return applyDecorators(
-    ApiOperation({ summary: '全体取得API' }),
-    ApiResponse({
-      status: HttpStatus.OK,
-      description: 'Comment一覧を返却',
-      type: CommentEntity,
-      isArray: true,
-    }),
-  );
-}
-
 export function FindAllCommentsByPostIdDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Post毎の全体取得API' }),
@@ -80,11 +68,6 @@ export function FindAllCommentsByPostIdDecorator() {
       description: 'Post毎のComment一覧を返却',
       type: CommentEntity,
       isArray: true,
-    }),
-    ApiResponse({
-      status: HttpStatus.NOT_FOUND,
-      description: '指定したIDを持つPostがない場合に返却',
-      type: PostNotFoundExceptionEntity,
     }),
   );
 }
