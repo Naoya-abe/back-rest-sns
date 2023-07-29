@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as pactum from 'pactum';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginDto } from 'src/auth/dto/login.dto';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 describe('App e2e', () => {
   let app: INestApplication;
@@ -127,10 +128,56 @@ describe('App e2e', () => {
       });
     });
     describe('Update', () => {
-      it.todo('should update');
+      const dto: UpdateUserDto = {
+        email: 'sample1234@email.com',
+        username: 'sample5678',
+        selfIntroduction: 'Hello, I am sample5678',
+      };
+      it('should throw if no accessToken provided', () => {
+        return pactum
+          .spec()
+          .patch('/users/$S{createdUserId}')
+          .withBody(dto)
+          .expectStatus(401);
+      });
+      it('should throw if no user with provided id', () => {
+        return pactum
+          .spec()
+          .patch('/users/1234567890')
+          .withBody(dto)
+          .withBearerToken('$S{fetchedAccessToken}')
+          .expectStatus(404);
+      });
+      it('should update', () => {
+        return pactum
+          .spec()
+          .patch('/users/$S{createdUserId}')
+          .withBody(dto)
+          .withBearerToken('$S{fetchedAccessToken}')
+          .expectStatus(200);
+      });
     });
     describe('Remove', () => {
-      it.todo('should remove');
+      it('should throw if no accessToken provided', () => {
+        return pactum
+          .spec()
+          .delete('/users/$S{createdUserId}')
+          .expectStatus(401);
+      });
+      it('should throw if no user with provided id', () => {
+        return pactum
+          .spec()
+          .delete('/users/1234567890')
+          .withBearerToken('$S{fetchedAccessToken}')
+          .expectStatus(404);
+      });
+      it('should remove', () => {
+        return pactum
+          .spec()
+          .delete('/users/$S{createdUserId}')
+          .withBearerToken('$S{fetchedAccessToken}')
+          .expectStatus(200);
+      });
     });
   });
 
