@@ -154,7 +154,6 @@ export class CommentsService {
         updatedAt: deletedComment.updatedAt,
       };
     } catch (error) {
-      console.log(error);
       if (error.code === 'P2025') {
         throw new NotFoundException(`The Comment with ${id} does not exist.`);
       } else {
