@@ -16,7 +16,7 @@ export class CreateCommentDto {
   @IsNotEmpty()
   @ApiProperty({
     example: 'a279c303-9abb-4395-9533-c7bccd4a63fb',
-    description: 'CommentしたPostのId',
+    description: 'CommentするPostのId',
   })
   readonly postId: string;
 }
