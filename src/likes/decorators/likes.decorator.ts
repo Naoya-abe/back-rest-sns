@@ -71,7 +71,7 @@ export function RemoveLikeDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'いいね解除API' }),
     ApiParam({
-      name: 'id',
+      name: 'postId',
       type: String,
       example: 'a279c303-9abb-4395-9533-c7bccd4a63fb',
     }),
@@ -82,7 +82,7 @@ export function RemoveLikeDecorator() {
     }),
     ApiResponse({
       status: HttpStatus.NOT_FOUND,
-      description: '指定したIDを持つLikeがない場合に返却',
+      description: '指定したLikeがない場合に返却',
       type: LikeNotFoundExceptionEntity,
     }),
   );
